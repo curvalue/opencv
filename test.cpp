@@ -49,7 +49,7 @@ int main()
         if (frame.empty()) {
             break;
         }
-        add(frame, Scalar(-30, -30, -30), result);//降低亮度,test1 -30左右，test2 -50左右，test3 -30
+        add(frame, Scalar(-30, -30, -30), result);//降低亮度,test1 -30左右，test2 -50左右，test3 -30（其实都是-30也可）
         // 转换图像到 HSV 色彩空间
         Mat hsv;
         cvtColor(frame, hsv, COLOR_BGR2HSV);
