@@ -5,9 +5,11 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include<opencv2/ml.hpp>
 
 using namespace std;
 using namespace cv;
+using namespace cv::ml;
 //由于在识别中的核心物体以及相关的物理特性是灯条，所以建一个灯条类
 class LightDescriptor
 {	    //在识别以及匹配到灯条的功能中需要用到旋转矩形的长宽偏转角面积中心点坐标等
@@ -130,11 +132,32 @@ int main()
                     ratio < 0.8) {
                     continue;
                 }
+
                 //绘制矩形
                 Point center = Point((leftLight.center.x + rightLight.center.x) / 2, (leftLight.center.y + rightLight.center.y) / 2);
                 RotatedRect rect = RotatedRect(center, Size(dis, meanLen), (leftLight.angle + rightLight.angle) / 2);
                 Point2f vertices[4];
                 rect.points(vertices);
+
+                Rect roi (vertices[0].x-20, vertices[0].y-20,norm(vertices[1]-vertices[(1+1)%4])+40,norm(vertices[0]-vertices[(0+1)%4])+40 );
+               // Mat frame_c = getRotationMatrix2D(center,(leftLight.angle + rightLight.angle) / 2,1.0);
+                int num;
+                if(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= frame.cols && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= frame.rows)
+                {
+                    Mat frame_roi = frame(roi);
+                    namedWindow("image", WINDOW_FREERATIO);
+                    resizeWindow("image", 800, 600);
+                    imshow("image", frame_roi);
+                    resize(frame_roi, frame_roi,Size(40,40), 0, 0, cv::INTER_LINEAR);
+                    Ptr<SVM> svm = SVM::load("/home/w/CLionProjects/opencvzimiao/123svm.xml");//加载svm对象
+                    Mat frame_roi32;
+                    frame_roi.convertTo(frame_roi32, CV_32FC1);
+                    int num = (int) svm->predict(frame_roi32);
+                    string s = to_string(num);
+                    putText(frame, s, center, FONT_HERSHEY_SIMPLEX, 1, Scalar(0,0,255),2.2);
+                }
+
+
                     for (int i = 0; i < 4; i++) {
                         //a = to_string(sqrt(s));
                         line(frame, vertices[i], vertices[(i + 1) % 4], Scalar(0, 0, 255), 2.2);
@@ -143,7 +166,7 @@ int main()
         }
         namedWindow("video", WINDOW_FREERATIO);
         imshow("video", frame);
-        waitKey(5);
+        waitKey(10);
 
     }
     video.release();
