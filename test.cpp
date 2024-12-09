@@ -138,24 +138,24 @@ int main()
                 RotatedRect rect = RotatedRect(center, Size(dis, meanLen), (leftLight.angle + rightLight.angle) / 2);
                 Point2f vertices[4];
                 rect.points(vertices);
-
-                Rect roi (vertices[0].x-20, vertices[0].y-20,norm(vertices[1]-vertices[(1+1)%4])+40,norm(vertices[0]-vertices[(0+1)%4])+40 );
-               // Mat frame_c = getRotationMatrix2D(center,(leftLight.angle + rightLight.angle) / 2,1.0);
-                int num;
-                if(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= frame.cols && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= frame.rows)
-                {
-                    Mat frame_roi = frame(roi);
-                    namedWindow("image", WINDOW_FREERATIO);
-                    resizeWindow("image", 800, 600);
-                    imshow("image", frame_roi);
-                    resize(frame_roi, frame_roi,Size(40,40), 0, 0, cv::INTER_LINEAR);
-                    Ptr<SVM> svm = SVM::load("/home/w/CLionProjects/opencvzimiao/123svm.xml");//加载svm对象
-                    Mat frame_roi32;
-                    frame_roi.convertTo(frame_roi32, CV_32FC1);
-                    int num = (int) svm->predict(frame_roi32);
-                    string s = to_string(num);
-                    putText(frame, s, center, FONT_HERSHEY_SIMPLEX, 1, Scalar(0,0,255),2.2);
-                }
+               //未实现的数字识别部分
+               //  Rect roi (vertices[0].x-20, vertices[0].y-20,norm(vertices[1]-vertices[(1+1)%4])+40,norm(vertices[0]-vertices[(0+1)%4])+40 );//裁减图片
+               // // Mat frame_c = getRotationMatrix2D(center,(leftLight.angle + rightLight.angle) / 2,1.0);
+               //  int num;
+               //  if(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= frame.cols && 0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= frame.rows)
+               //  {
+               //      Mat frame_roi = frame(roi);
+               //      namedWindow("image", WINDOW_FREERATIO);
+               //      resizeWindow("image", 800, 600);
+               //      imshow("image", frame_roi);
+               //      resize(frame_roi, frame_roi,Size(40,40), 0, 0, cv::INTER_LINEAR);//svm所需图片尺寸为40,40
+               //      Ptr<SVM> svm = SVM::load("/home/w/CLionProjects/opencvzimiao/123svm.xml");//加载svm对象
+               //      Mat frame_roi32;
+               //      frame_roi.convertTo(frame_roi32, CV_32FC1);//转化为CV_32F，CV_32FCC1均报错
+               //      int num = (int) svm->predict(frame_roi32);
+               //      string s = to_string(num);
+               //      putText(frame, s, center, FONT_HERSHEY_SIMPLEX, 1, Scalar(0,0,255),2.2);
+               //  }
 
 
                     for (int i = 0; i < 4; i++) {
